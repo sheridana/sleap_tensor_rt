@@ -1,12 +1,8 @@
-import argparse
 import gc
 import itertools
-import numpy as np
 import os
 import pandas as pd
-import shutil
 import sleap
-import tensorflow as tf
 import time
 from sleap.nn.inference import load_model
 from time import perf_counter
