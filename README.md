@@ -197,7 +197,7 @@ if kwargs["tensor_rt"] != None:
 ![](https://github.com/sheridana/sleap_tensor_rt/blob/main/static/fps_vs_frames.png)
 
 * TensorRT does offer speed increase
-* Batch size does not seem to have too much affect once you start optimizing 
+* Batch size does not seem to have too much effect once you start optimizing 
 
 ![](https://github.com/sheridana/sleap_tensor_rt/blob/main/static/quadro_engine_fps.png)
 ![](https://github.com/sheridana/sleap_tensor_rt/blob/main/static/quadro_engine_latency.png)
