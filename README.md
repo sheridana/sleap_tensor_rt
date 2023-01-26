@@ -1,24 +1,36 @@
 # Overview
 
-We recently had a fun [SLEAP](https://sleap.ai/) hackathon to work on implementing some new features. One of the features we were interested in was having the option to utilize TensorRT for inference optimization on Nvidia GPUs. If you don't have access to a Nvidia GPU then this feature will not work.
+We recently had a fun [SLEAP](https://sleap.ai/) hackathon to work on implementing some new features. One of the features we were interested in was having the option to utilize TensorRT for inference optimization on Nvidia GPUs ([issue 1112](https://github.com/talmolab/sleap/issues/1112)). If you don't have access to a Nvidia GPU then this feature will not work.
 
-[overview](https://docs.nvidia.com/deeplearning/frameworks/tf-trt-user-guide/index.html)
+[TensorRT](https://docs.nvidia.com/deeplearning/frameworks/tf-trt-user-guide/index.html) is an SDK from Nvidia that allows optimization through model quantization (weights are converted to lower precision). It has been shown to significantly speed up inference speeds when Nvidia GPUs are available. A [helpful blog](https://blog.tensorflow.org/2021/01/leveraging-tensorflow-tensorrt-integration.html) demonstrates how this can be done directly with tensorflow using an experimental [converter](https://www.tensorflow.org/api_docs/python/tf/experimental/tensorrt/Converter). 
 
-[helful blog](https://blog.tensorflow.org/2021/01/leveraging-tensorflow-tensorrt-integration.html)
+The general idea is to:
 
-[tensorflow api](https://www.tensorflow.org/api_docs/python/tf/experimental/tensorrt/Converter)
+1) initialize your model (e.g a keras model)
+2) run some data through it (e.g fit or predict)
+3) save the model to a protocol buffer (a Google format for serialized data)
+4) convert the saved model to a TensorRT model
+5) save the converted model as a separate protocol buffer
+6) load the converted model function
+7) run inference
 
-[original repo](https://github.com/talmo/gpuhackathon-sleap/tree/main/tensorrt)
+As demonstrated in this figure from the above blog post:
 
-[issue](https://github.com/talmolab/sleap/issues/1112)
+![](https://github.com/sheridana/sleap_tensor_rt/blob/main/static/tftrt_workflow.png)
 
-[pull request](https://github.com/talmolab/sleap/pull/1138)
+A [prototype](https://github.com/talmo/gpuhackathon-sleap/tree/main/tensorrt) for integrating TensorRT with SLEAP showed major improvements when optimizing models with TensorRT, and was the inspiration for this feature.
+
+The relevant modules in SLEAP that handle model initialization and inference are shown in the red box:
+
+<img src="https://github.com/sheridana/sleap_tensor_rt/blob/main/static/relevant_modules.png" width=50% height=50%>
+
+This [pull request](https://github.com/talmolab/sleap/pull/1138) is an initial attempt to add this TensorRT functionality to the base predictor class. This feature is currently **extremely** experimental and is likely only useful for experienced users. The PR will likely be updated moving forward. 
 
 ---
 
 # System / hardware considerations
 
-This feature is currently **extremely** experimental and is likely only useful for experienced users. It was tested on Ubuntu 18 and therefore probably won't work on other versions / systems. If you are running on linux and want to check your version you can run `lsb_release -a`. Example output:
+This feature was tested on Ubuntu 18 and therefore probably won't work on other versions / systems. If you are running on linux and want to check your version you can run `lsb_release -a`. Example output:
 
 ```
 No LSB modules are available.
